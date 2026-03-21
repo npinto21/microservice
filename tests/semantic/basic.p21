@@ -1,0 +1,44 @@
+package p21
+
+use p21.npinto21.microservice
+
+func health(ctx: obj) {
+    microservice.CtxStatus(ctx, microservice.StatusOk)
+    user_id := microservice.CtxParam(ctx, "id")
+    page := microservice.CtxQuery(ctx, "page")
+    body := microservice.CtxBody(ctx)
+    body_json := body.json
+    body_form := body.form
+    req_id := microservice.CtxRequestId(ctx)
+    trace_id := microservice.CtxTraceId(ctx)
+    span_id := microservice.CtxSpanId(ctx)
+    corr_id := microservice.CtxCorrelationId(ctx)
+    microservice.CtxJson(ctx, { ok: true })
+}
+
+server := microservice.New({
+    port: 8021,
+    host: "0.0.0.0",
+    max_body_size: 1048576,
+    timeout: 30,
+    request_timeout: 10,
+    read_timeout: 10,
+    write_timeout: 10,
+    idle_timeout: 60,
+    shutdown_timeout: 15,
+    downstream_timeout: 3,
+    retries: 2,
+    backoff_ms: 200
+})
+
+api := microservice.Group(server, "/api")
+microservice.Use(server, microservice.MiddlewareLogger())
+microservice.Use(server, microservice.MiddlewareCors({ enabled: 1 }))
+microservice.Use(api, microservice.MiddlewareRateLimit({ window: 60, max: 100 }))
+microservice.Get(server, "/health", health)
+microservice.Get(api, "/users/:id", health)
+microservice.Post(api, "/users", health)
+microservice.EnableMetrics(server)
+microservice.EnableTracing(server)
+microservice.EnableHealth(server)
+microservice.EnablePprof(server)

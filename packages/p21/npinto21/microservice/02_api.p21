@@ -1,0 +1,400 @@
+package p21.npinto21.microservice
+
+use microservice_native
+
+func New(config: obj) : obj {
+    server, err := microservice_native.server_new(config)
+    if (err != null) error(err)
+    return server
+}
+
+func Group(server: obj, prefix: string) : obj {
+    group, err := microservice_native.server_group(server, prefix)
+    if (err != null) error(err)
+    return group
+}
+
+func Use(target: obj, middleware: obj) : obj {
+    _, err := microservice_native.apply_middleware(target, middleware)
+    if (err != null) error(err)
+    return target
+}
+
+func Get(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_get(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func Post(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_post(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func Put(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_put(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func Head(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_head(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func Options(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_options(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func Delete(target: obj, path: string, handler: func) : obj {
+    _, err := microservice_native.route_delete(target, path, handler)
+    if (err != null) error(err)
+    return target
+}
+
+func EnableMetrics(server: obj) : obj {
+    _, err := microservice_native.enable_metrics(server)
+    if (err != null) error(err)
+    return server
+}
+
+func EnableTracing(server: obj) : obj {
+    _, err := microservice_native.enable_tracing(server)
+    if (err != null) error(err)
+    return server
+}
+
+func EnableHealth(server: obj) : obj {
+    _, err := microservice_native.enable_health(server)
+    if (err != null) error(err)
+    return server
+}
+
+func EnablePprof(server: obj) : obj {
+    _, err := microservice_native.enable_pprof(server)
+    if (err != null) error(err)
+    return server
+}
+
+func Start(server: obj) {
+    _, err := microservice_native.server_start(server)
+    if (err != null) error(err)
+}
+
+func Stop(server: obj) {
+    _, err := microservice_native.server_stop(server)
+    if (err != null) error(err)
+}
+
+func ServerState(server: obj) : obj {
+    state, err := microservice_native.server_state(server)
+    if (err != null) error(err)
+    return state
+}
+
+func MiddlewareLogger() : obj {
+    middleware, err := microservice_native.middleware_logger()
+    if (err != null) error(err)
+    return middleware
+}
+
+func MiddlewareCors(config: obj) : obj {
+    middleware, err := microservice_native.middleware_cors(config)
+    if (err != null) error(err)
+    return middleware
+}
+
+func MiddlewareCompress() : obj {
+    middleware, err := microservice_native.middleware_compress()
+    if (err != null) error(err)
+    return middleware
+}
+
+func MiddlewareRateLimit(config: obj) : obj {
+    middleware, err := microservice_native.middleware_rate_limit(config)
+    if (err != null) error(err)
+    return middleware
+}
+
+func Logger() : obj {
+    middleware, err := microservice_native.middleware_logger()
+    if (err != null) error(err)
+    return middleware
+}
+
+func Cors(config: obj) : obj {
+    middleware, err := microservice_native.middleware_cors(config)
+    if (err != null) error(err)
+    return middleware
+}
+
+func Compress() : obj {
+    middleware, err := microservice_native.middleware_compress()
+    if (err != null) error(err)
+    return middleware
+}
+
+func RateLimit(config: obj) : obj {
+    middleware, err := microservice_native.middleware_rate_limit(config)
+    if (err != null) error(err)
+    return middleware
+}
+
+func UseLogger(target: obj) : obj {
+    middleware, err := microservice_native.middleware_logger()
+    if (err != null) error(err)
+    applied, applyErr := microservice_native.apply_middleware(target, middleware)
+    _applied := applied
+    if (applyErr != null) error(applyErr)
+    return target
+}
+
+func UseCors(target: obj, config: obj) : obj {
+    middleware, err := microservice_native.middleware_cors(config)
+    if (err != null) error(err)
+    applied, applyErr := microservice_native.apply_middleware(target, middleware)
+    _applied := applied
+    if (applyErr != null) error(applyErr)
+    return target
+}
+
+func UseCompress(target: obj) : obj {
+    middleware, err := microservice_native.middleware_compress()
+    if (err != null) error(err)
+    applied, applyErr := microservice_native.apply_middleware(target, middleware)
+    _applied := applied
+    if (applyErr != null) error(applyErr)
+    return target
+}
+
+func UseRateLimit(target: obj, config: obj) : obj {
+    middleware, err := microservice_native.middleware_rate_limit(config)
+    if (err != null) error(err)
+    applied, applyErr := microservice_native.apply_middleware(target, middleware)
+    _applied := applied
+    if (applyErr != null) error(applyErr)
+    return target
+}
+
+func LogInfo(message: string, fields: obj) {
+    _, err := microservice_native.log_info(message, fields)
+    if (err != null) error(err)
+}
+
+func LogError(message: string, fields: obj) {
+    _, err := microservice_native.log_error(message, fields)
+    if (err != null) error(err)
+}
+
+// Test helper only. This is intentionally not part of the production-facing API.
+func TestSleepMs(duration: int) {
+    _, err := microservice_native.test_sleep_ms(duration)
+    if (err != null) error(err)
+}
+
+func CtxHeader(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_header(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func Header(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_header(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxQuery(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_query(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func Query(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_query(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxParam(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_param(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func Param(ctx: obj, name: string) : string {
+    value, err := microservice_native.ctx_param(ctx, name)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxBody(ctx: obj) : obj {
+    value, err := microservice_native.ctx_body(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func Body(ctx: obj) : obj {
+    value, err := microservice_native.ctx_body(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxStatus(ctx: obj, code: int) {
+    _, err := microservice_native.ctx_status(ctx, code)
+    if (err != null) error(err)
+}
+
+func Status(ctx: obj, code: int) {
+    _, err := microservice_native.ctx_status(ctx, code)
+    if (err != null) error(err)
+}
+
+func CtxJson(ctx: obj, body: obj) {
+    _, err := microservice_native.ctx_json(ctx, body)
+    if (err != null) error(err)
+}
+
+func Json(ctx: obj, body: obj) {
+    _, err := microservice_native.ctx_json(ctx, body)
+    if (err != null) error(err)
+}
+
+func CtxSetHeader(ctx: obj, name: string, value: string) {
+    _, err := microservice_native.ctx_set_header(ctx, name, value)
+    if (err != null) error(err)
+}
+
+func SetHeader(ctx: obj, name: string, value: string) {
+    _, err := microservice_native.ctx_set_header(ctx, name, value)
+    if (err != null) error(err)
+}
+
+func CtxIsCancelled(ctx: obj) : bool {
+    value, err := microservice_native.ctx_is_cancelled(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxCancelReason(ctx: obj) : string {
+    value, err := microservice_native.ctx_cancel_reason(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxDeadlineMs(ctx: obj) : int {
+    value, err := microservice_native.ctx_deadline_ms(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxRequestId(ctx: obj) : string {
+    value, err := microservice_native.ctx_request_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func RequestId(ctx: obj) : string {
+    value, err := microservice_native.ctx_request_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxTraceId(ctx: obj) : string {
+    value, err := microservice_native.ctx_trace_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func TraceId(ctx: obj) : string {
+    value, err := microservice_native.ctx_trace_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxSpanId(ctx: obj) : string {
+    value, err := microservice_native.ctx_span_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func SpanId(ctx: obj) : string {
+    value, err := microservice_native.ctx_span_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CtxCorrelationId(ctx: obj) : string {
+    value, err := microservice_native.ctx_correlation_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func CorrelationId(ctx: obj) : string {
+    value, err := microservice_native.ctx_correlation_id(ctx)
+    if (err != null) error(err)
+    return value
+}
+
+func HasError(err: obj) : bool {
+    return err != null
+}
+
+func ErrorKind(err: obj) : string {
+    if (err == null) return ""
+    return err.kind
+}
+
+func ErrorMessage(err: obj) : string {
+    if (err == null) return ""
+    return err.message
+}
+
+func ErrorSource(err: obj) : string {
+    if (err == null) return ""
+    return err.source
+}
+
+func Raise(err: obj) {
+    if (err != null) error(err)
+}
+
+func Ok(ctx: obj, body: obj) {
+    statusResult, err := microservice_native.ctx_status(ctx, StatusOk)
+    _statusResult := statusResult
+    if (err != null) error(err)
+    jsonResult, jsonErr := microservice_native.ctx_json(ctx, body)
+    _jsonResult := jsonResult
+    if (jsonErr != null) error(jsonErr)
+}
+
+func Created(ctx: obj, body: obj) {
+    statusResult, err := microservice_native.ctx_status(ctx, StatusCreated)
+    _statusResult := statusResult
+    if (err != null) error(err)
+    jsonResult, jsonErr := microservice_native.ctx_json(ctx, body)
+    _jsonResult := jsonResult
+    if (jsonErr != null) error(jsonErr)
+}
+
+func NoContent(ctx: obj) {
+    statusResult, err := microservice_native.ctx_status(ctx, StatusNoContent)
+    _statusResult := statusResult
+    if (err != null) error(err)
+    jsonResult, jsonErr := microservice_native.ctx_json(ctx, {})
+    _jsonResult := jsonResult
+    if (jsonErr != null) error(jsonErr)
+}
+
+func ErrorJson(ctx: obj, code: int, message: string) {
+    statusResult, err := microservice_native.ctx_status(ctx, code)
+    _statusResult := statusResult
+    if (err != null) error(err)
+    jsonResult, jsonErr := microservice_native.ctx_json(ctx, { error: message })
+    _jsonResult := jsonResult
+    if (jsonErr != null) error(jsonErr)
+}

@@ -1,0 +1,9 @@
+.p21/
+vendor/
+*.dylib
+*.so
+*.dll
+*.o
+*.a
+*.out
+.DS_Store

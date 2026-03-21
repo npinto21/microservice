@@ -1,0 +1,22 @@
+package p21
+
+use p21.npinto21.microservice
+
+func health(ctx: obj) {
+    microservice.Ok(ctx, { ok: true })
+}
+
+server := microservice.New({
+    port: 8021,
+    host: "0.0.0.0",
+    timeout: 30,
+    request_timeout: 10,
+    downstream_timeout: 3,
+    retries: 1,
+    backoff_ms: 100
+})
+
+microservice.UseLogger(server)
+microservice.EnableHealth(server)
+microservice.Get(server, "/health", health)
+microservice.LogInfo("microservice example bootstrapped", {port: 8021})

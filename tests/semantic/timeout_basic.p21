@@ -1,0 +1,18 @@
+package p21
+
+use p21.npinto21.microservice
+
+func slow(ctx: obj) {
+    microservice.TestSleepMs(10)
+    cancelled := microservice.CtxIsCancelled(ctx)
+    reason := microservice.CtxCancelReason(ctx)
+    microservice.LogInfo("slow", { cancelled: cancelled, reason: reason })
+}
+
+server := microservice.New({
+    port: 8021,
+    host: "127.0.0.1",
+    request_timeout: 1
+})
+
+microservice.Get(server, "/slow", slow)

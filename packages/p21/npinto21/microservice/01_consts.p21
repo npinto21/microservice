@@ -1,0 +1,13 @@
+package p21.npinto21.microservice
+
+const Version : string = "v1"
+const Runtime : string = "microservice_native"
+const StatusOk : int = 200
+const StatusCreated : int = 201
+const StatusNoContent : int = 204
+const StatusBadRequest : int = 400
+const StatusUnauthorized : int = 401
+const StatusNotFound : int = 404
+const StatusMethodNotAllowed : int = 405
+const StatusPayloadTooLarge : int = 413
+const StatusInternalError : int = 500

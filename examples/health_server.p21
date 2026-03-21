@@ -1,0 +1,84 @@
+package p21
+
+use p21.npinto21.microservice
+use json
+
+server := microservice.New({
+    port: 8021,
+    host: "127.0.0.1",
+    timeout: 30,
+    request_timeout: 10,
+    read_timeout: 10,
+    write_timeout: 10
+})
+
+func health(ctx: obj) {
+    state := microservice.ServerState(server)
+    microservice.SetHeader(ctx, "X-Pinto21-Service", "microservice")
+    microservice.Ok(ctx, {
+        ok: true,
+        service: "microservice",
+        deadline_ms: microservice.CtxDeadlineMs(ctx),
+        query_page: microservice.Query(ctx, "page"),
+        request_id: microservice.RequestId(ctx),
+        trace_id: microservice.TraceId(ctx),
+        span_id: microservice.SpanId(ctx),
+        correlation_id: microservice.CorrelationId(ctx),
+        server: state
+    })
+}
+
+func state(ctx: obj) {
+    microservice.Ok(ctx, microservice.ServerState(server))
+}
+
+func get_user(ctx: obj) {
+    body := microservice.Body(ctx)
+    microservice.Ok(ctx, {
+        ok: true,
+        id: microservice.Param(ctx, "id"),
+        query_page: microservice.Query(ctx, "page"),
+        body_length: body.length,
+        body_content_type: body.content_type
+    })
+}
+
+func create_user(ctx: obj) {
+    body := microservice.Body(ctx)
+    microservice.Created(ctx, {
+        ok: true,
+        content_type: body.content_type,
+        raw: body.raw,
+        json: body.json,
+        form: body.form
+    })
+}
+
+func debug_parse_error(ctx: obj) {
+    parsed, err := json.parse("{")
+    if (microservice.HasError(err)) {
+        microservice.Status(ctx, microservice.StatusBadRequest)
+        microservice.Json(ctx, {
+            ok: false,
+            kind: microservice.ErrorKind(err),
+            message: microservice.ErrorMessage(err),
+            source: microservice.ErrorSource(err)
+        })
+    } else {
+        microservice.Ok(ctx, {
+            ok: true,
+            parsed: parsed
+        })
+    }
+}
+
+microservice.EnableHealth(server)
+microservice.EnableMetrics(server)
+microservice.EnableTracing(server)
+microservice.Get(server, "/health", health)
+microservice.Get(server, "/state", state)
+microservice.Get(server, "/users/:id", get_user)
+microservice.Post(server, "/users", create_user)
+microservice.Get(server, "/debug/parse-error", debug_parse_error)
+microservice.LogInfo("health server starting", { port: 8021, host: "127.0.0.1" })
+microservice.Start(server)

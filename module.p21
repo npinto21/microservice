@@ -1,0 +1,18 @@
+module p21@npinto21/microservice@v1
+
+repository github npinto21/microservice
+exports p21.npinto21.microservice
+
+native registry native/module_native_microservice_registry.c
+native runtime native/module_native_microservice_runtime.c
+bridge c native/bindings.c
+
+build include native
+build source native/module_native_microservice_registry.c
+build source native/module_native_microservice_runtime.c
+build source native/bindings.c
+build source native/server.c
+build source native/router.c
+build source native/context.c
+build source native/middleware.c
+build source native/observability.c
