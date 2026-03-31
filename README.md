@@ -2,6 +2,18 @@
 
 `p21@npinto21/microservice@v1` is the production-oriented HTTP and microservice module for Pinto21.
 
+## Host integration context
+
+Inside the Pinto21 workspace, the host-side module infrastructure now lives in:
+
+- `src/modules/manifest.*`
+- `src/modules/package_resolver.*`
+- `src/modules/native/module_native_*`
+- `src/modules/native/core_native_packages.*`
+- `src/cli/mod_main.c`
+
+This module is not part of the core runtime. It is loaded through that module infrastructure and exposes its API via package code plus `native/` bindings.
+
 The goal of this module is simple application code with a strong operational base:
 
 - routing and middleware similar to Express and Gin
@@ -95,6 +107,7 @@ The module is being designed with resilience as a first-class concern.
 
 Global service configuration should cover:
 
+- `timeout`
 - `request_timeout`
 - `read_timeout`
 - `write_timeout`
@@ -112,6 +125,7 @@ Example:
 server := microservice.New({
     port: 8021,
     host: "0.0.0.0",
+    timeout: 30,
     request_timeout: 10,
     read_timeout: 10,
     write_timeout: 10,
@@ -122,6 +136,27 @@ server := microservice.New({
     backoff_ms: 200
 })
 ```
+
+Timeout precedence:
+
+- `request_timeout`, `read_timeout`, and `write_timeout` override everything else when explicitly set
+- `timeout` acts as the shared default for those three values
+- if `timeout` is omitted, the runtime falls back to `30` seconds
+
+So:
+
+```pinto21
+{
+    timeout: 30,
+    request_timeout: 5
+}
+```
+
+means:
+
+- `request_timeout = 5`
+- `read_timeout = 30`
+- `write_timeout = 30`
 
 ### Request-scoped cancellation
 
@@ -288,7 +323,7 @@ This is one of the core safety rules of the module and should be preserved in ev
 - `native/bindings.c`
   C bridge entrypoint for the Pinto21 module runtime.
 - `native/module_native_microservice_registry.c`
-  Declares the `microservice_native` package surface for semantic/runtime lookup.
+  Declares the `microservice_native` package surface inside the module registry provider.
 - `native/module_native_microservice_runtime.c`
   Converts Pinto21 values into C structs and returns Pinto21-friendly objects and results.
 

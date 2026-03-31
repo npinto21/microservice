@@ -1,0 +1,120 @@
+package p21
+
+use http
+
+base := "http://127.0.0.1:8021"
+
+health_resp := http.request({
+    method: "GET",
+    url: base + "/health",
+    query: { page: 2 },
+    headers: {
+        Accept: "application/json",
+        traceparent: "00-11111111111111111111111111111111-2222222222222222-01"
+    },
+    timeout: 5000
+})
+
+state_resp := http.request({
+    method: "GET",
+    url: base + "/state",
+    timeout: 5000
+})
+
+user_resp := http.request({
+    method: "GET",
+    url: base + "/users/42",
+    query: { page: 3 },
+    timeout: 5000
+})
+
+create_resp := http.request({
+    method: "POST",
+    url: base + "/users",
+    body: {
+        name: "nuno",
+        role: "admin",
+        active: true
+    },
+    timeout: 5000
+})
+
+head_resp := http.request({
+    method: "HEAD",
+    url: base + "/health",
+    timeout: 5000
+})
+
+options_resp := http.request({
+    method: "OPTIONS",
+    url: base + "/users/42",
+    timeout: 5000
+})
+
+parse_resp := http.request({
+    method: "GET",
+    url: base + "/debug/parse-error",
+    timeout: 5000
+})
+
+metrics_resp := http.request({
+    method: "GET",
+    url: base + "/metrics",
+    timeout: 5000
+})
+
+@"=============================="\
+@"Pinto21 Microservice Smoke Test"\
+@"=============================="\
+@"base=%base"\
+@""\
+
+@"[health]"\
+@"status=%health_resp.status, ok=%health_resp.ok, isJson=%1", health_resp.isJson()\
+if (health_resp.isJson()) {
+    @"json=%1", health_resp.json()\
+}
+@""\
+
+@"[state]"\
+@"status=%state_resp.status, ok=%state_resp.ok, isJson=%1", state_resp.isJson()\
+if (state_resp.isJson()) {
+    @"json=%1", state_resp.json()\
+}
+@""\
+
+@"[user get]"\
+@"status=%user_resp.status, ok=%user_resp.ok, isJson=%1", user_resp.isJson()\
+if (user_resp.isJson()) {
+    @"json=%1", user_resp.json()\
+}
+@""\
+
+@"[user create]"\
+@"status=%create_resp.status, ok=%create_resp.ok, isJson=%1", create_resp.isJson()\
+if (create_resp.isJson()) {
+    @"json=%1", create_resp.json()\
+}
+@""\
+
+@"[head /health]"\
+@"status=%head_resp.status, ok=%head_resp.ok, body_len=%1", len(head_resp.body)\
+@"headers=%1", head_resp.headers\
+@""\
+
+@"[options /users/:id]"\
+@"status=%options_resp.status, ok=%options_resp.ok, body_len=%1", len(options_resp.body)\
+@"headers=%1", options_resp.headers\
+@""\
+
+@"[debug parse error]"\
+@"status=%parse_resp.status, ok=%parse_resp.ok, isJson=%1", parse_resp.isJson()\
+if (parse_resp.isJson()) {
+    @"json=%1", parse_resp.json()\
+}
+@""\
+
+@"[metrics]"\
+@"status=%metrics_resp.status, ok=%metrics_resp.ok, type=%metrics_resp.contentType"\
+@"len=%1", len(metrics_resp.body)\
+@"body=%1", metrics_resp.text()\

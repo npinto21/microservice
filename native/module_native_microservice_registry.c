@@ -1,4 +1,4 @@
-#include "native/native.h"
+#include "modules/native/core_native_packages.h"
 #include "module_native_microservice_hooks.h"
 
 #include <string.h>
